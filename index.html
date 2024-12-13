@@ -61,9 +61,13 @@
             }
 
             try {
-                const response = await fetch('https://api.exchangerate.host/convert?from=CHF&to=EUR');
+                const response = await fetch('https://api.exchangerate.host/latest?base=CHF&symbols=EUR');
                 const data = await response.json();
-                const rate = data.result;
+                const rate = data.rates.EUR;
+
+                if (!rate) {
+                    throw new Error("Kein Wechselkurs gefunden.");
+                }
 
                 const result = (amount * rate).toFixed(2);
                 resultField.textContent = `${amount} CHF = ${result} EUR (Kurs: ${rate.toFixed(4)})`;
