@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wechselkurs-App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #ff4747;
+        }
+        .converter {
+            margin: 20px auto;
+            padding: 20px;
+            border: 2px solid #ff4747;
+            border-radius: 10px;
+            max-width: 400px;
+            background-color: #1e1e1e;
+        }
+        input, button {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #ff4747;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #e63c3c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Wechselkurs-App</h1>
+    <div class="converter">
+        <h2>CHF zu EUR</h2>
+        <input type="number" id="amount" placeholder="Betrag eingeben" />
+        <button onclick="convert()">Umrechnen</button>
+        <p id="result">Ergebnis wird hier angezeigt</p>
+    </div>
+
+    <script>
+        async function convert() {
+            const amount = document.getElementById('amount').value;
+            const resultField = document.getElementById('result');
+
+            if (!amount || amount <= 0) {
+                resultField.textContent = "Bitte gib einen gültigen Betrag ein.";
+                return;
+            }
+
+            try {
+                const response = await fetch('https://api.exchangerate.host/convert?from=CHF&to=EUR');
+                const data = await response.json();
+                const rate = data.result;
+
+                const result = (amount * rate).toFixed(2);
+                resultField.textContent = `${amount} CHF = ${result} EUR (Kurs: ${rate.toFixed(4)})`;
+            } catch (error) {
+                resultField.textContent = "Fehler beim Abrufen des Wechselkurses.";
+            }
+        }
+    </script>
+</body>
+</html>
